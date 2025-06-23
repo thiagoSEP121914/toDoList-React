@@ -1,23 +1,23 @@
-import { useState } from 'react'
 import './App.css'
+import { useState } from 'react'
+import ToDoItem from './component/ToDoItem';
+import Input from './component/Input';
 
 function App() {
 
-  const[task, setTask] = useState("");
+   const[listOfTask, setListOftask] = useState([]);
 
-  const[listOfTask, setListOftask] = useState([]);
+  
+  function addTask(newTask) {
+    setListOftask((prevList) => [...prevList, newTask]);
+  } 
 
-  function inputHandler(event) {
-    const newvalue = event.target.value;
-    setTask(newvalue);
-  }
-
-  function submitHandler(event) {
-    event.preventDefault();
-    if(task.trim() !== "") {
-      setListOftask((previous) => [...previous, task])
-      setTask("");
-    }
+  function deleteItem(id) {
+    setListOftask(prevItems => {
+        return prevItems.filter((item, index) => {
+            return index !== id;
+        });
+    });
   }
 
   return (
@@ -26,20 +26,20 @@ function App() {
           <div className='header'>
             <h2>To-doList</h2>
           </div>
-          <form onSubmit={submitHandler}>
-              <input type="text" 
-                onChange={inputHandler}
-                placeholder='to-do-list'
-                value={task}
-              />
-              <button onClick={submitHandler}>Add</button>
-          </form>
+            <Input
+              onAdd = {addTask}
+            />
           <ul>
-            {listOfTask.map((submitValue) => {
-              return (
-                  <li>{submitValue}</li>
-              );
-            })}
+              {listOfTask.map((value, index) => {
+                  return (
+                  <ToDoItem 
+                    key = {index}
+                    id = {index}
+                    item = {value}
+                    onChecked = {deleteItem}
+                  />
+                )
+              })}
           </ul>
         </div>
     </>
